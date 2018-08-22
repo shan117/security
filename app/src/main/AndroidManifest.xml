@@ -18,11 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Main2Activity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".FaceTrackerActivity"
@@ -63,7 +59,14 @@
             android:name=".BarcodeCaptureActivity"
             android:label="Read Barcode"
             android:screenOrientation="portrait" />
-        <activity android:name=".ListActivity"></activity>
+        <activity android:name=".ListActivity" />
+        <activity android:name=".LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
