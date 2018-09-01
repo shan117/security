@@ -57,16 +57,16 @@ public class Main2Activity extends AppCompatActivity {
 
         startBtn =(Button)findViewById(R.id.button2);
 
-        adminBtn =(Button) findViewById(R.id.button3);
+       // adminBtn =(Button) findViewById(R.id.button3);
 
 //        imgView =(ImageView)findViewById(R.id.imageView6);
 
-        adminBtn.setOnClickListener(new View.OnClickListener() {
+       /* adminBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Main2Activity.this,ListActivity.class));
             }
-        });
+        });*/
 
         counterPref=getSharedPreferences("counterPref",0);
 
