@@ -69,7 +69,7 @@ public class Main2Activity extends AppCompatActivity {
         tvName.setText(user.getName());
         tvEmail.setText(user.getEmail());
         tvCompany.setText(user.getCompany());
-        tvSupervisior.setText(user.getSuperUser());
+        tvSupervisior.setText(Helper.base64ToString(user.getSuperUser()));
 
 
         // adminBtn =(Button) findViewById(R.id.button3);
