@@ -117,7 +117,7 @@
         android:layout_marginBottom="@dimen/margin_40"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:id="@+id/button2"
+        android:id="@+id/btn_start"
         android:textSize="@dimen/text_size_l"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -79,15 +79,13 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    double latitude=0.0;
-    double longitude=0.0;
+    double latitude = 0.0;
+    double longitude = 0.0;
 
 
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
-
-
 
 
     private static final String TAG = "Barcode-reader";
@@ -115,7 +113,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
      * Initializes the UI and creates the detector pipeline.
      */
 
-     AlertDialog.Builder dialog;
+    AlertDialog.Builder dialog;
     AlertDialog alert;
     Handler handler;
 
@@ -138,7 +136,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
 
         dialog = new AlertDialog.Builder(this).setTitle("Message").setMessage("Details captured successfully");
         alert = dialog.create();
-        handler=new Handler();
+        handler = new Handler();
 
 
         setContentView(R.layout.barcode_capture);
@@ -213,7 +211,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the barcode detector to detect small barcodes
      * at long distances.
-     *
+     * <p>
      * Suppressing InlinedApi since there is a check that the minimum version is met before using
      * the constant.
      */
@@ -333,7 +331,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Camera permission granted - initialize the camera source");
             // we have permission, so create the camerasource
-            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus,false);
+            boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, false);
             boolean useFlash = getIntent().getBooleanExtra(UseFlash, false);
             createCameraSource(autoFocus, useFlash);
             return;
@@ -430,9 +428,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
 
-         latitude= location.getLatitude();
-         longitude = location.getLongitude();
-
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
 
 
     }
@@ -501,12 +498,10 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
     @Override
     public void onBarcodeDetected(Barcode barcode) {
         //do something with barcode data returned
-        String barcodeValue=barcode.displayValue;
-        barcodeValue=barcode.displayValue;
+        String barcodeValue = barcode.displayValue;
+        barcodeValue = barcode.displayValue;
 
-         saveDataToSharedPrefetences("barcodeValue",barcodeValue);
-
-
+        saveDataToSharedPrefetences("barcodeValue", barcodeValue);
 
 
 //        final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle("Message").setMessage("Details captured successfully");
@@ -525,7 +520,6 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
                 alert.show();
             }
         });
-
 
 
 // Hide after some seconds
@@ -550,26 +544,23 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
         handler.postDelayed(runnable, 2000);
 
 
-
-
     }
 
 
-    public  void saveDataToSharedPrefetences(String key, String value){
+    public void saveDataToSharedPrefetences(String key, String value) {
 
 //        buildGoogleApiClient();
 //        double longitude= location.getLatitude();
 //        if(latitude!=0.0 && longitude==0.0){
-            SharedPreferences pref= this.getApplicationContext().getSharedPreferences("dataPref",0);
-            SharedPreferences.Editor edit= pref.edit();
-            edit.putString(key,value);
-            edit.putLong("latitude",Double.doubleToRawLongBits(latitude));
-            edit.putLong("longitude",Double.doubleToRawLongBits(longitude));
-        edit.putLong("latitude1",(long)(latitude));
-        edit.putLong("longitude1",(long)(longitude));
-
-        edit.putBoolean("uploadAllowed",true);
-            edit.commit();
+        SharedPreferences pref = this.getApplicationContext().getSharedPreferences("pref", 0);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString(key, value);
+        edit.putLong("latitude", Double.doubleToRawLongBits(latitude));
+        edit.putLong("longitude", Double.doubleToRawLongBits(longitude));
+        edit.putLong("latitude1", (long) (latitude));
+        edit.putLong("longitude1", (long) (longitude));
+        edit.putBoolean("uploadAllowed", true);
+        edit.commit();
 //        }
 
 
@@ -581,8 +572,6 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
 //    }
 
 
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -592,7 +581,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
             // getSelfLocation();
         }
     }
@@ -606,7 +595,9 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -627,7 +618,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(BarcodeCaptureActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION );
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
                         .create()
@@ -638,7 +629,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION );
+                        MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }

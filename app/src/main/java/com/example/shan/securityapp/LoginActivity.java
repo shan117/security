@@ -2,6 +2,7 @@ package com.example.shan.securityapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 
@@ -33,10 +35,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView tvForgotPswd;
 
-    RelativeLayout parent;
+    private RelativeLayout parent;
 
     private String strUsername;
-    private  String strPassword;
+    private String strPassword;
+
+    private SharedPreferences pref;
+
     final private String TAG="LoginActivity";
 
     @Override
@@ -46,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
+
+        pref = getSharedPreferences("pref",MODE_PRIVATE);
 
         parent = (RelativeLayout) findViewById(R.id.parent);
 
@@ -105,8 +112,15 @@ public class LoginActivity extends AppCompatActivity {
                     User user=dataSnapshot.getValue(User.class);
 
                     if(user.getPassword().contentEquals(strPassword)) {
+                        SharedPreferences.Editor prefsEditor = pref.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(user);
+                        prefsEditor.putString("user", json);
+                        prefsEditor.commit();
+
                         Intent intent = new Intent(LoginActivity.this, Main2Activity.class);
                         startActivity(intent);
+
                     }else{
                         CustomSnackbar.createSnackbarRed("Invalid password",parent,LoginActivity.this);
                     }

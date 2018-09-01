@@ -644,7 +644,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
     public  void saveDataToSharedPrefetences(String key, String value){
-        SharedPreferences pref= this.getApplicationContext().getSharedPreferences("dataPref",0);
+        SharedPreferences pref= this.getApplicationContext().getSharedPreferences("pref",0);
         pref.edit().putString(key,value).commit();
 
     }
