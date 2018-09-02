@@ -151,8 +151,8 @@ public class Main2Activity extends AppCompatActivity {
 
                                 scan.setImagePath(downloadUrl.toString());
                                 scan.setTime(""+(formatter.format(date)).toString());
-                                scan.setLatitude(""+pref.getLong("latitude1", 0));
-                                scan.setLongitude(""+pref.getLong("longitude1", 0));
+                                scan.setLatitude(""+pref.getLong("latitude", 0));
+                                scan.setLongitude(""+pref.getLong("longitude", 0));
                                 scan.setBarcodeValue(pref.getString("barcodeValue", "0"));
 
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
