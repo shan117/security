@@ -168,6 +168,7 @@ public class Main2Activity extends AppCompatActivity {
                                         .child(user.getUser())
                                         .child("supervisor")
                                         .child(Helper.stringToBase64(user.getEmail()))
+                                        .child("scan")
                                         .child(String.valueOf(currentTime))
                                         .setValue(scan);
                             }
