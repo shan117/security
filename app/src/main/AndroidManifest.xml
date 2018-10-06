@@ -26,34 +26,12 @@
             android:label="Face Tracker"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity android:name=".LauncherActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity android:name=".AddLocationActivity"></activity>
+        <activity android:name=".LauncherActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".BarcodeCaptureActivity"
@@ -63,7 +41,6 @@
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

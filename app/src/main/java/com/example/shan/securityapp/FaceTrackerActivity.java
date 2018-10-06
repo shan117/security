@@ -58,24 +58,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-/**
- * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
- * overlay graphics to indicate the position, size, and ID of each face.
- */
+
 public final class FaceTrackerActivity extends AppCompatActivity {
+
     private static final String TAG = "FaceTracker";
 
-
     private String filepath = "MyFileStorage";
-    File dir;
 
-    Button takePicture;
     TextView counterTxt;
-//    ImageView img;
+
 
     private CameraSource mCameraSource = null;
-
-    private static final int REQUEST_CAMERA_PERMISSION = 200;
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
@@ -84,13 +77,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
-    //==============================================================================================
-    // Activity Methods
-    //==============================================================================================
 
-    /**
-     * Initializes the UI and initiates the creation of a face detector.
-     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -100,13 +87,10 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         counterTxt=(TextView)findViewById(R.id.counter);
 
-//        img =(ImageView)findViewById(R.id.imageView);
-
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
+
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
-//        takePicture=(Button)findViewById(R.id.takePicture);
-//         Check for the camera permission before accessing the camera.  If the
-//         permission is not granted yet, request permission.
+
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
@@ -114,19 +98,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             requestCameraPermission();
         }
 
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(FaceTrackerActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
-//            return;
-//        }
-
-
-//        takePicture.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                takePicture();
-//            }
-//        });
     }
 
     /**
@@ -202,42 +173,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
     }
-
-//    private void createCameraSource2() {
-//
-//        Context context = getApplicationContext();
-//        FaceDetector detector = new FaceDetector.Builder(context)
-//                .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
-//                .build();
-//
-//        detector.setProcessor(
-//                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
-//                        .build());
-//
-//        if (!detector.isOperational()) {
-//            // Note: The first time that an app using face API is installed on a device, GMS will
-//            // download a native library to the device in order to do detection.  Usually this
-//            // completes before the app is run for the first time.  But if that download has not yet
-//            // completed, then the above call will not detect any faces.
-//            //
-//            // isOperational() can be used to check if the required native library is currently
-//            // available.  The detector will automatically become operational once the library
-//            // download completes on device.
-//            Log.w(TAG, "Face detector dependencies are not yet available.");
-//        }
-//
-//
-//        mCameraSource = new CameraSource.Builder(context, detector)
-//                .setRequestedPreviewSize(640, 480)
-//                .setFacing(CameraSource.CAMERA_FACING_FRONT)
-//                .setRequestedFps(30.0f)
-//                .build();
-//
-//
-//
-//
-//
-//    }
 
     /**
      * Restarts the camera.
@@ -354,8 +289,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
     private void  stopCameraSource(){
-      //  mCameraSource.release();
-       // mCameraSource.stop();
+
         mPreview.stop();
         mPreview.release();
         if(mCameraSource!=null) {
@@ -363,14 +297,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
 
         }
-       // finish();
 
         startActivity(new Intent(FaceTrackerActivity.this,BarcodeCaptureActivity.class));
-
-
-
-
-
     }
 
     //==============================================================================================
@@ -407,16 +335,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         @Override
         public void onNewItem(int faceId, Face item) {
             mFaceGraphic.setId(faceId);
-//            Toast.makeText(FaceTrackerActivity.this,"Face detected",Toast.LENGTH_LONG).show();
 
-
-
-//            new Handler().post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Toast.makeText(FaceTrackerActivity.this,"Face detected handler",Toast.LENGTH_LONG).show();
-//                }
-//            });
         }
 
         /**
@@ -431,26 +350,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
             startCounter();
 
-
-
-//            createCameraSource(2);
-//            onDone();
-//            takePicture();
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    takePicture();
-//                }
-//            }, 3000);
-
-//            Toast.makeText(FaceTrackerActivity.this,"Face detected in update",Toast.LENGTH_LONG).show();
-//            FaceTrackerActivity.this.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Toast.makeText(FaceTrackerActivity.this,"Face detected onupdate",Toast.LENGTH_LONG).show();
-//                }
-//            });
-//            takePicture();
         }
 
         /**
@@ -476,86 +375,22 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     protected void takePicture(){
         Log.e(TAG,"in takePicture");
         mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
-            private File imageFile;
-
             @Override
             public void onPictureTaken(byte[] bytes) {
 
-//                final File file = new File(Environment.getExternalStorageDirectory()+"/pic2.jpg");
-//                final File file = new File(FaceTrackerActivity.this.getExternalFilesDir(null), "pic2.jpg");
-                //ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
-               // File directory = contextWrapper.getDir(getExternalFilesDir(filepath) , "pic5");
                 File myInternalFile = new File(getExternalFilesDir(filepath) , "pic5.jpg");
                 Log.e(TAG ,"bytes :"+bytes.toString());
                 Log.e(TAG ,"bytes :"+bytes.toString());
 
-                String byte3= null;
-                try {
-                    byte3 = new String(bytes, "ISO-8859-1");
-                    byte[] encoded = byte3.getBytes("ISO-8859-1");
-                    byte[] encoded1 = byte3.getBytes("ISO-8859-1");
-
-                    String encodedString = Base64.encodeToString(bytes, Base64.NO_WRAP);
-                    byte[] decodedBytes = Base64.decode(encodedString, Base64.NO_WRAP);
-                    byte[] decodedBytes2 = Base64.decode(encodedString, Base64.NO_WRAP);
-
-                    Bitmap bitmap4 = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-
-
-
-
-
-                    /*try{
-                        img.setImageBitmap(bitmap4);
-                    }
-                    catch (Exception e){
-                        Log.e("error",e.getMessage());
-                    }*/
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                byte[] byte2= byte3.getBytes();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(byte2, 0, byte2.length);
-                Bitmap bitmap2 = BitmapFactory.decodeByteArray(byte2, 0, byte2.length);
-                Bitmap bitmap3 = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap bitmap4 = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Bitmap bitmap5 = BitmapFactory.decodeFile(myInternalFile.getAbsolutePath());
-                Bitmap bitmap6 = BitmapFactory.decodeFile(myInternalFile.getPath());
-//                Bitmap bitmap7 = BitmapFactory.decodeFile(myInternalFile.getCanonicalPath());
-
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                Bitmap bitmap8 = BitmapFactory.decodeFile(myInternalFile.getPath(), options);
-                Bitmap bitmap9 = BitmapFactory.decodeFile(myInternalFile.getAbsolutePath(), options);
-
-
-
-
-
-
-
 
                 myInternalFile.getAbsoluteFile();
-                myInternalFile.getAbsoluteFile();
-                String a=myInternalFile.getAbsolutePath();
-                a=myInternalFile.getAbsolutePath();
-
-//            saveDataToSharedPrefetences("faceImage",Base64.encodeToString(bytes, Base64.NO_WRAP));
-//            saveDataToSharedPrefetences("ImagePath",myInternalFile.getAbsolutePath());
 
                 OutputStream output = null;
                 try {
                     output = new FileOutputStream(myInternalFile);
                     output.write(bytes);
-
-
-
-          /*          BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                    Bitmap bitmap8 = BitmapFactory.decodeFile(myInternalFile.getPath(), options);
-                    Bitmap bitmap9 = BitmapFactory.decodeFile(myInternalFile.getAbsolutePath(), options);*/
-
 
                     Toast.makeText(FaceTrackerActivity.this,"Image captured successfully", Toast.LENGTH_SHORT).show();
                     try {
@@ -571,83 +406,11 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                 catch (IOException e) {
                     Log.e(TAG,"IOException");
                 }
-
-
-
-
-
-
-//                try {
-//
-//                    Toast.makeText(FaceTrackerActivity.this,"picture taken",Toast.LENGTH_SHORT).show();
-//                    // convert byte array into bitmap
-//                    Bitmap loadedImage = null;
-//                    Bitmap rotatedBitmap = null;
-//                    loadedImage = BitmapFactory.decodeByteArray(bytes, 0,
-//                            bytes.length);
-//
-//                    Matrix rotateMatrix = new Matrix();
-//                    rotateMatrix.postRotate(0);
-//                    rotatedBitmap = Bitmap.createBitmap(loadedImage, 0, 0,
-//                            loadedImage.getWidth(), loadedImage.getHeight(),
-//                            rotateMatrix, false);
-//
-//                    dir = new File(
-//                            Environment.getExternalStoragePublicDirectory(
-//                                    Environment.DIRECTORY_PICTURES), "MyPhotos");
-//
-//                    boolean success = true;
-//                    if (!dir.exists())
-//                    {
-//                        success = dir.mkdirs();
-//                    }
-//                    if (success) {
-//                        java.util.Date date = new java.util.Date();
-//                        imageFile = new File(dir.getAbsolutePath()
-//                                + File.separator
-//                                + new Timestamp(date.getTime()).toString()
-//                                + "Image.jpg");
-//
-//                        imageFile.createNewFile();
-//                    } else {
-//                        Toast.makeText(getBaseContext(), "Image Not saved",
-//                                Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//                    ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-//
-//                    // save image into gallery
-//                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-//
-//                    FileOutputStream fout = new FileOutputStream(imageFile);
-//                    fout.write(ostream.toByteArray());
-//                    fout.close();
-//                    ContentValues values = new ContentValues();
-//
-//                    values.put(MediaStore.Images.Media.DATE_TAKEN,
-//                            System.currentTimeMillis());
-//                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-//                    values.put(MediaStore.MediaColumns.DATA,
-//                            imageFile.getAbsolutePath());
-//
-//                    FaceTrackerActivity.this.getContentResolver().insert(
-//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//
-//                    //saveToInternalStorage(loadedImage);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
         });
 
     }
 
-
-    public  void saveDataToSharedPrefetences(String key, String value){
-        SharedPreferences pref= this.getApplicationContext().getSharedPreferences("pref",0);
-        pref.edit().putString(key,value).commit();
-
-    }
 
     public void startCounter(){
 
