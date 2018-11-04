@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             byte[] data = strUsername.getBytes("UTF-8");
             base64  = Base64.encodeToString(data, Base64.NO_WRAP);
-            Log.e(TAG,base64);
+            Log.e(TAG,base64);//
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         String json = gson.toJson(user);
                         prefsEditor.putString("user", json);
+                        prefsEditor.putBoolean("userloggedin",true);
                         prefsEditor.commit();
 
                         Intent intent = new Intent(LoginActivity.this, Main2Activity.class);

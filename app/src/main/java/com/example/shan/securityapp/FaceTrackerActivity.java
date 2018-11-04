@@ -59,7 +59,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 
-public final class FaceTrackerActivity extends AppCompatActivity {
+public final class FaceTrackerActivity extends CustomActivity {
 
     private static final String TAG = "FaceTracker";
 
@@ -532,4 +532,9 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }*/
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

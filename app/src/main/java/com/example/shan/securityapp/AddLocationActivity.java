@@ -18,13 +18,17 @@ import android.widget.Toast;
 import com.example.shan.securityapp.misc.CustomSnackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
-public class AddLocationActivity extends AppCompatActivity {
+public class AddLocationActivity extends CustomActivity {
 
-    private EditText etLocation;
     private EditText etName;
 
     private Toolbar toolbar;
+
+    SharedPreferences  pref;
+
+    private User user;
 
     static boolean isOnCreateCalled = false;
 
@@ -36,6 +40,11 @@ public class AddLocationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_location);
+
+        Gson gson = new Gson();
+        pref = getSharedPreferences("pref", 0);
+        String json = pref.getString("user", "");
+        user = gson.fromJson(json, User.class);
 
         isOnCreateCalled = true;
 
@@ -65,6 +74,10 @@ public class AddLocationActivity extends AppCompatActivity {
                 if (etName.getText().toString() == null || etName.getText().toString().isEmpty()) {
                     CustomSnackbar.createSnackbarRed("Please enter name of location", parent, AddLocationActivity.this);
                 } else {
+                    pref = getSharedPreferences("pref", 0);
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putBoolean("uploadAllowed", true);
+                    edit.commit();
                     startActivity(new Intent(AddLocationActivity.this, BarcodeCaptureActivity.class));
 
                 }
@@ -79,7 +92,10 @@ public class AddLocationActivity extends AppCompatActivity {
         if (isOnCreateCalled) {
             isOnCreateCalled = false;
         } else {
-            addLocation();
+            pref = getSharedPreferences("pref", 0);
+            if(pref.getBoolean("uploadAllowed",false)) {
+                addLocation();
+            }
         }
     }
 
@@ -88,8 +104,6 @@ public class AddLocationActivity extends AppCompatActivity {
         DatabaseReference myRef = database.getReference();
         long currentTime = System.currentTimeMillis();
 
-        SharedPreferences  pref = getSharedPreferences("pref", 0);
-
         Location location = new Location();
 
         location.setLatitude(""+pref.getLong("latitude", 0));
@@ -97,10 +111,15 @@ public class AddLocationActivity extends AppCompatActivity {
         location.setBarcodeValue(pref.getString("barcodeValue", "0"));
         location.setName(etName.getText().toString());
 
-        myRef.child("Location")
+        myRef.child("companies").child(user.getCompany()).child("Location")
                 .child(String.valueOf(currentTime))
                 .setValue(location);
         Toast.makeText(AddLocationActivity.this, "Location added successfully", Toast.LENGTH_SHORT);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.shan.securityapp">
 
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-feature android:name="android.hardware.camera" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />/
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -17,31 +18,54 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main2Activity">
 
-        </activity>
+        <receiver android:name=".BootReciever">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".Main2Activity"></activity>
+
         <activity
             android:name=".FaceTrackerActivity"
             android:icon="@drawable/icon"
             android:label="Face Tracker"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-        <activity android:name=".AddLocationActivity"></activity>
-        <activity android:name=".LauncherActivity"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity android:name=".AddLocationActivity" />
+
+        <activity android:name=".LauncherActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main">
-        </activity>
+            android:label="@string/title_activity_main"></activity>
+
         <activity
             android:name=".BarcodeCaptureActivity"
             android:label="Read Barcode"
             android:screenOrientation="portrait" />
+
         <activity android:name=".ListActivity" />
+
         <activity android:name=".LoginActivity">
+        </activity>
+
+        <activity android:name=".FakeLauncherActivity"
+            android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>

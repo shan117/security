@@ -49,7 +49,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 
-public final class BarcodeCaptureActivity extends AppCompatActivity implements
+public final class BarcodeCaptureActivity extends CustomActivity implements
         BarcodeGraphicTracker.BarcodeUpdateListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,

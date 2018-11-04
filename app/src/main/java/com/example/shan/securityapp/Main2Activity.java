@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,10 +38,10 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TreeSet;
 
-public class Main2Activity extends AppCompatActivity {
+public class Main2Activity extends CustomActivity {
 
+    private ImageView ivLogout;
     private ImageView ivScan;
     private ImageView ivAddLocation;
 
@@ -66,7 +66,7 @@ public class Main2Activity extends AppCompatActivity {
 
     private Scan scan;
 
-    int j=0;
+    int j = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +81,9 @@ public class Main2Activity extends AppCompatActivity {
 
         ivAddLocation = (ImageView) findViewById(R.id.iv_add_location);
         ivScan = (ImageView) findViewById(R.id.iv_scan);
+        ivLogout = (ImageView) findViewById(R.id.iv_logout);
 
-        parent=(RelativeLayout) findViewById(R.id.parent);
+        parent = (RelativeLayout) findViewById(R.id.parent);
 
         tvName = (TextView) findViewById(R.id.tv_name);
         tvEmail = (TextView) findViewById(R.id.tv_email);
@@ -94,18 +95,6 @@ public class Main2Activity extends AppCompatActivity {
         tvCompany.setText(user.getCompany());
         tvSupervisior.setText(Helper.base64ToString(user.getSuperUser()));
 
-
-        // adminBtn =(Button) findViewById(R.id.button3);
-
-//        imgView =(ImageView)findViewById(R.id.imageView6);
-
-       /* adminBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Main2Activity.this,ListActivity.class));
-            }
-        });*/
-
         ivScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +105,16 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Main2Activity.this, AddLocationActivity.class));
+            }
+        });
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putBoolean("userloggedin", false);
+                editor.commit();
+                startActivity(new Intent(Main2Activity.this, LoginActivity.class));
+                finish();
             }
         });
 
@@ -149,72 +148,54 @@ public class Main2Activity extends AppCompatActivity {
         };
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void checkLocation(long lat, long lng) {
+        j = 0;
+        isSourceValid = false;
+        final double sourceLatitude = Double.longBitsToDouble(lat);
+        final double sourceLongitude = Double.longBitsToDouble(lng);
 
-        if (isOnCreateCalled) {
-            isOnCreateCalled = false;
-        } else {
-            if (pref.getBoolean("uploadAllowed", false)) {
-
-                checkLocation(pref.getLong("latitude", 0),pref.getLong("longitude", 0));
-
-            }
-        }
-    }
-
-    public  void checkLocation( long lat,long lng)
-    {
-        j=0;
-        isSourceValid=false;
-        final double sourceLatitude =Double.longBitsToDouble(lat);
-        final double sourceLongitude =Double.longBitsToDouble(lng);
-
-        Log.e("Main2Activity", "source "+sourceLatitude+" , "+sourceLongitude);
+        Log.e("Main2Activity", "source " + sourceLatitude + " , " + sourceLongitude);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference().child("Location");
+        final DatabaseReference myRef = database.getReference().child("companies").child(user.getCompany()).child("Location");
 
 
-        final ProgressDialog pd= CustomProgressDialog.ctor(Main2Activity.this);
+        final ProgressDialog pd = CustomProgressDialog.ctor(Main2Activity.this);
         pd.show();
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final long count=dataSnapshot.getChildrenCount();
-                try{
+                final long count = dataSnapshot.getChildrenCount();
+                try {
                     myRef.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                             j++;
 
-                            Location location= dataSnapshot.getValue(Location.class);
-                            Double destLatitude=Double.longBitsToDouble(Long.parseLong(location.getLatitude()));
-                            Double destLongitude=Double.longBitsToDouble(Long.parseLong(location.getLongitude()));
-                            Log.e("Main2Activity", "destination "+destLatitude+" , "+destLongitude);
+                            Location location = dataSnapshot.getValue(Location.class);
+                            Double destLatitude = Double.longBitsToDouble(Long.parseLong(location.getLatitude()));
+                            Double destLongitude = Double.longBitsToDouble(Long.parseLong(location.getLongitude()));
+                            Log.e("Main2Activity", "destination " + destLatitude + " , " + destLongitude);
 
-                            android.location.Location startPoint=new android.location.Location("locationA");
+                            android.location.Location startPoint = new android.location.Location("locationA");
                             startPoint.setLatitude(sourceLatitude);
                             startPoint.setLongitude(sourceLongitude);
 
-                            android.location.Location endPoint=new android.location.Location("locationA");
+                            android.location.Location endPoint = new android.location.Location("locationA");
                             endPoint.setLatitude(destLatitude);
                             endPoint.setLongitude(destLongitude);
 
-                            double distance=startPoint.distanceTo(endPoint);
-                            if(distance<250.0)
-                            {
-                                isSourceValid=true;
+                            double distance = startPoint.distanceTo(endPoint);
+                            if (distance < 250.0 && location.getBarcodeValue().contentEquals(pref.getString("barcodeValue", "0"))) {
+                                isSourceValid = true;
                                 Log.e("Main2Activity", "valid distance");
-                                strLocationName=location.getName();
+                                strLocationName = location.getName();
                                 addData();
                             }
 
-                            if(count==j)
-                            {
-                                CustomSnackbar.createSnackbarRed("No nearby location found",parent,Main2Activity.this);
+                            if (count == j) {
+                                CustomSnackbar.createSnackbarRed("No nearby location found", parent, Main2Activity.this);
                             }
 
                             Log.e("Main2Activity", "distance " + distance);
@@ -237,9 +218,8 @@ public class Main2Activity extends AppCompatActivity {
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
-                }
-                catch (Exception e){
-                    Log.e("ListActivity" ," error :"+e.getMessage());
+                } catch (Exception e) {
+                    Log.e("ListActivity", " error :" + e.getMessage());
                 }
                 pd.dismiss();
             }
@@ -251,8 +231,7 @@ public class Main2Activity extends AppCompatActivity {
         });
     }
 
-    public void addData()
-    {
+    public void addData() {
         final int count = pref.getInt("imageCount", 0);
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
         long currentTime = System.currentTimeMillis();
@@ -275,10 +254,10 @@ public class Main2Activity extends AppCompatActivity {
                         Log.e("date", (formatter.format(date)).toString());
 
                         scan.setImagePath(downloadUrl.toString());
-                        scan.setTime(""+(formatter.format(date)).toString());
-                        scan.setLatitude(""+pref.getLong("latitude", 0));
-                        scan.setLongitude(""+pref.getLong("longitude", 0));
-                        scan.setLocationName(""+strLocationName);
+                        scan.setTime("" + (formatter.format(date)).toString());
+                        scan.setLatitude("" + pref.getLong("latitude", 0));
+                        scan.setLongitude("" + pref.getLong("longitude", 0));
+                        scan.setLocationName("" + strLocationName);
                         scan.setBarcodeValue(pref.getString("barcodeValue", "0"));
                         scan.setUser(user.getUser());
                         scan.setSuperAdmin(user.getSuperAdmin());
@@ -289,7 +268,7 @@ public class Main2Activity extends AppCompatActivity {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference();
                         long currentTime = System.currentTimeMillis();
-                        myRef.child("data")
+                        myRef.child("companies").child(user.getCompany()).child("data")
                                 .child(String.valueOf(currentTime))
                                 .setValue(scan);
                         Toast.makeText(Main2Activity.this, "Scanned successfully", Toast.LENGTH_SHORT);
@@ -302,6 +281,24 @@ public class Main2Activity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isOnCreateCalled) {
+            isOnCreateCalled = false;
+        } else {
+            if (pref.getBoolean("uploadAllowed", false)) {
+
+                checkLocation(pref.getLong("latitude", 0), pref.getLong("longitude", 0));
+
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
 }
